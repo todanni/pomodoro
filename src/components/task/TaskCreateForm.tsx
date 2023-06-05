@@ -21,7 +21,7 @@ export const TaskCreateForm = () => {
 
   return (
     <form
-      className="flex w-full items-center gap-2 rounded-xl bg-white px-4 py-2 shadow-xl md:order-3"
+      className="flex h-full w-full items-center gap-2 rounded-xl bg-white px-4 py-2 shadow-xl md:order-3"
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(onSubmit)}
     >

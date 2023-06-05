@@ -63,13 +63,13 @@ const Home: NextPage = () => {
           <div className="lg:order-3">
             <TaskCreateForm />
           </div>
-          <div className="lg:order-5">
+          <div className="lg:order-5 lg:h-full">
             <TasksList
               tasks={tasks}
               onTaskStart={(task: Task) => setCurrentTask(task)}
             />
           </div>
-          <div className="lg:order-7">
+          <div className="lg:order-7 lg:self-center">
             <TaskControls />
           </div>
         </div>

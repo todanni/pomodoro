@@ -31,8 +31,8 @@ export const TasksList = ({ tasks, onTaskStart }: TaskListProps) => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-1">
-      <div className="my-1 flex flex-col gap-2 rounded-xl border-t border-t-gray-200 bg-white p-4 shadow-xl ">
+    <div className="flex h-full w-full flex-col gap-1">
+      <div className="flex h-full flex-col gap-2 rounded-xl border-t border-t-gray-200 bg-white p-4 shadow-xl ">
         {tasks?.map((task) => {
           return task.status === "DONE" ? (
             <CompletedTask {...task} />
