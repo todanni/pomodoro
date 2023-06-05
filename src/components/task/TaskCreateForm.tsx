@@ -16,33 +16,23 @@ export const TaskCreateForm = () => {
   const { register, handleSubmit, reset } = useForm<TaskSchema>({});
 
   const onSubmit: SubmitHandler<TaskSchema> = (data: TaskSchema) => {
-    console.log(data);
     task.mutate(data);
   };
 
   return (
     <form
+      className="flex w-full items-center gap-2 rounded-xl bg-white px-4 py-2 shadow-xl "
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSubmit={handleSubmit(onSubmit)}
     >
-      <div className="flex w-full items-center gap-2">
-        <CreateIcon className="h-6 w-6 text-green-300" />
-        <input
-          type="text"
-          className="placeholder:text-md w-full border-none p-1 text-lg placeholder:font-light placeholder:italic focus:outline-none focus:ring-0"
-          autoComplete="off"
-          placeholder="Create a new task..."
-          {...register("name", { required: true })}
-        />
-        <ExpandIcon className="h-6 w-6 p-0.5 text-gray-400/80" />
-      </div>
-      {/* <input
+      <CreateIcon className="h-6 w-6 text-green-300" />
+      <input
         type="text"
-        className="ml-9 w-full border-none p-1 font-light italic placeholder:font-light focus:outline-none focus:ring-0"
+        className="placeholder:text-md w-full border-none p-1 text-gray-700 placeholder:font-light focus:outline-none focus:ring-0"
         autoComplete="off"
-        placeholder="Add a description..."
-        {...register("description", { required: true })}
-      /> */}
+        placeholder="Create a new task..."
+        {...register("name", { required: true })}
+      />
     </form>
   );
 };
@@ -67,22 +57,22 @@ function CreateIcon(props: SVGAttributes<SVGElement>) {
   );
 }
 
-function ExpandIcon(props: SVGAttributes<SVGElement>) {
-  return (
-    <svg
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={1.5}
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-      {...props}
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M19.5 8.25l-7.5 7.5-7.5-7.5"
-      />
-    </svg>
-  );
-}
+// function ExpandIcon(props: SVGAttributes<SVGElement>) {
+//   return (
+//     <svg
+//       fill="none"
+//       stroke="currentColor"
+//       strokeWidth={1.5}
+//       viewBox="0 0 24 24"
+//       xmlns="http://www.w3.org/2000/svg"
+//       aria-hidden="true"
+//       {...props}
+//     >
+//       <path
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//         d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+//       />
+//     </svg>
+//   );
+// }

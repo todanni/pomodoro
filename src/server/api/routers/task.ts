@@ -5,7 +5,6 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const tasksRouter = createTRPCRouter({
   add: protectedProcedure.input(taskSchema).mutation(({ ctx, input }) => {
-    // Overwrite the userId with the current user's id
     input.userId = ctx.session?.user.id;
 
     return ctx.prisma.task.create({
@@ -19,11 +18,15 @@ export const tasksRouter = createTRPCRouter({
     return ctx.prisma.task.findMany({
       where: {
         userId: ctx.session?.user.id,
-        // status: Status.TODO,
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [
+        {
+          status: "asc",
+        },
+        {
+          createdAt: "desc",
+        },
+      ],
     });
   }),
 

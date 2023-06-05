@@ -1,3 +1,4 @@
+import { type Status } from "@prisma/client";
 import { z } from "zod";
 
 export const taskSchema = z.object({
@@ -8,5 +9,13 @@ export const taskSchema = z.object({
   priority: z.boolean().optional(),
   projectId: z.string().default(""),
 });
+
+export type TaskDetail = {
+  id: string;
+  name: string;
+  description: string;
+  status: Status;
+  createdAt: Date;
+};
 
 export type TaskSchema = z.infer<typeof taskSchema>;
