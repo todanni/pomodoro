@@ -1,29 +1,28 @@
 import { type Task } from "@prisma/client";
 import { type SVGAttributes } from "react";
+import { CardContainer } from "../containers/CardContainer";
 
 export type CurrentTaskProps = {
   task: Task | null;
 };
 
 export const CurrentTask = ({ task }: CurrentTaskProps) => {
-  if (!task) {
-    return (
-      <div className="flex items-center justify-center gap-1 rounded-xl border-t border-t-gray-100 bg-white py-2 shadow-lg ">
-        <CurrentTaskIcon className="h-6 w-6 text-blue-300" />
-        <p className="text-center text-lg font-light text-gray-400">
-          Click the start button on the task you are currently working on...
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex items-center justify-center gap-1 rounded-xl border-t border-t-gray-100 bg-white py-2 shadow-lg ">
-      <CurrentTaskIcon className="h-6 w-6 text-green-400" />
-      <p className="max-w-[94%] truncate text-center text-lg font-semibold text-gray-600">
-        {task.name}
-      </p>
-    </div>
+    <CardContainer>
+      <div className="flex items-center justify-center gap-2">
+        <CurrentTaskIcon className="h-6 w-6 text-green-300" />
+        {task && (
+          <p className="max-w-[85%] truncate text-center text-lg font-semibold text-gray-600">
+            {task.name}
+          </p>
+        )}
+        {!task && (
+          <p className="text-center text-lg font-light text-gray-400">
+            Click the start button on the task you are currently working on...
+          </p>
+        )}
+      </div>
+    </CardContainer>
   );
 };
 

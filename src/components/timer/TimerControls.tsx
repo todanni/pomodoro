@@ -1,21 +1,42 @@
 import { type SVGAttributes } from "react";
 
 type TimerControlsProps = {
+  remainingTime: number;
+  name: string;
   onStart: () => void;
   onStop: () => void;
 };
 
-export const TimerControls = ({ onStart, onStop }: TimerControlsProps) => {
+export const TimerControls = ({
+  remainingTime,
+  name,
+  onStart,
+  onStop,
+}: TimerControlsProps) => {
+  const minutes = Math.floor(remainingTime / 60);
+  const seconds = remainingTime % 60;
+
+  const pad = (n: number) => n.toString().padStart(2, "0");
+  const format = () => `${pad(minutes)}:${pad(seconds)}`;
+
   return (
-    <div className="flex items-center justify-center">
-      <StartButton
-        className="h-8 text-green-400 hover:cursor-pointer"
-        onClick={() => onStart()}
-      />
-      <StopButton
-        className="h-8 text-gray-500 hover:cursor-pointer"
-        onClick={() => onStop()}
-      />
+    <div className="flex flex-col items-center justify-center gap-2 rounded-full bg-white p-16 shadow-xl">
+      <p className="text-3xl font-semibold tracking-wider text-green-400">
+        {name}
+      </p>
+      <p className="px-1 text-5xl proportional-nums text-gray-500">
+        {format()}
+      </p>
+      <div className="flex items-center justify-center">
+        <StartButton
+          className="h-8 text-green-400 hover:cursor-pointer"
+          onClick={() => onStart()}
+        />
+        <StopButton
+          className="h-8 text-gray-500 hover:cursor-pointer"
+          onClick={() => onStop()}
+        />
+      </div>
     </div>
   );
 };

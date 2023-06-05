@@ -13,6 +13,19 @@ type TaskListProps = {
 
 export const TasksList = ({ tasks, onTaskStart }: TaskListProps) => {
   const { data: sessionData } = useSession();
+  const ctx = api.useContext();
+
+  const completeAllTasks = api.tasks.completeAll.useMutation({
+    onSuccess: () => {
+      void ctx.tasks.list.invalidate();
+    },
+  });
+
+  const deleteAllTasks = api.tasks.deleteAll.useMutation({
+    onSuccess: () => {
+      void ctx.tasks.list.invalidate();
+    },
+  });
 
   if (!sessionData) {
     return (
@@ -43,11 +56,17 @@ export const TasksList = ({ tasks, onTaskStart }: TaskListProps) => {
       </div>
       <div className="flex justify-center py-2">
         <div className="grid grid-cols-2 gap-4">
-          <button className="inline-flex  items-center justify-center gap-2 whitespace-nowrap rounded-2xl  bg-white px-4 py-1 text-center font-medium text-gray-700 shadow-xl">
+          <button
+            onClick={() => completeAllTasks.mutate()}
+            className="inline-flex  items-center justify-center gap-2 whitespace-nowrap rounded-2xl  bg-white px-4 py-1 text-center font-medium text-gray-700 shadow-xl"
+          >
             <CompleteIconButton className="h-6 w-6 text-green-400" />
             Complete all tasks
           </button>
-          <button className="inline-flex  items-center justify-center gap-2 whitespace-nowrap rounded-2xl  bg-white px-4 py-1 text-center font-medium text-gray-700 shadow-xl">
+          <button
+            onClick={() => deleteAllTasks.mutate()}
+            className="inline-flex  items-center justify-center gap-2 whitespace-nowrap rounded-2xl  bg-white px-4 py-1 text-center font-medium text-gray-700 shadow-xl"
+          >
             <DeleteIconButton className="h-6 w-6 text-red-600" />
             Delete all tasks
           </button>
@@ -77,11 +96,11 @@ const TodoTask = ({ task, onTaskStart }: TodoTaskProps) => {
         checked={task.status === "DONE"}
         type="checkbox"
         className="h-5 w-5 rounded-xl border-gray-300 text-green-400"
-        onClick={() => completeTask.mutate({ id: task.id })}
+        onChange={() => completeTask.mutate({ id: task.id })}
       />
       <p className="text-gray-700">{task.name}</p>
       <CurrentTaskIcon
-        className="ml-auto h-6 w-6 text-blue-500"
+        className="ml-auto h-6 w-6 text-blue-500 hover:cursor-pointer"
         onClick={() => onTaskStart(task)}
       />
     </div>

@@ -13,7 +13,8 @@ export const CompletedTask = (task: Task) => {
   return (
     <div key={task.id} className="flex h-8 items-center gap-4">
       <input
-        checked={task.status === "DONE"}
+        // checked={task.status === "DONE"}
+        defaultChecked
         type="checkbox"
         className="h-5 w-5 rounded-xl border-gray-300 text-green-400"
       />

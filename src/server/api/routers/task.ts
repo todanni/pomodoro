@@ -47,6 +47,17 @@ export const tasksRouter = createTRPCRouter({
       });
     }),
 
+  completeAll: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.prisma.task.updateMany({
+      where: {
+        userId: ctx.session?.user.id,
+      },
+      data: {
+        status: Status.DONE,
+      },
+    });
+  }),
+
   delete: protectedProcedure
     .input(
       z.object({
@@ -60,4 +71,12 @@ export const tasksRouter = createTRPCRouter({
         },
       });
     }),
+
+  deleteAll: protectedProcedure.mutation(({ ctx }) => {
+    return ctx.prisma.task.deleteMany({
+      where: {
+        userId: ctx.session?.user.id,
+      },
+    });
+  }),
 });
