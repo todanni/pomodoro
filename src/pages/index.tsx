@@ -25,56 +25,70 @@ const intervals: Interval[] = [
 ];
 
 const Home: NextPage = () => {
-  const [currentInterval, setCurrentInterval] = useState(0);
   const [currentTask, setCurrentTask] = useState<Task | null>(null);
-
+  const [intervalIndex, setIntervalIndex] = useState(0);
   const { data: tasks } = api.tasks.list.useQuery();
 
   return (
-    <>
+    <div className="flex h-screen flex-col gap-4">
       <Head>
         <title>Pomodoro | ToDanni</title>
         <meta name="description" content="ToDanni Pomodoro timer with tasks." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* xl is 1280px, lg is 1024px */}
-      <main className="h-screen w-full bg-gray-50 p-4">
-        <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-2">
-          <Image
-            src={logo}
-            alt="ToDanni Logo"
-            className="h-8 object-scale-down lg:order-1 lg:col-span-2"
-          />
-          <div className="lg:order-6">
+      <header className="flex w-full items-center justify-center pt-4">
+        <Image
+          src={logo}
+          alt="ToDanni Logo"
+          className="h-8 object-scale-down"
+        />
+      </header>
+      <main className="flex flex-1 justify-center lg:flex-none">
+        <div className="grid w-11/12 content-start gap-4 lg:m-auto lg:max-w-6xl lg:grid-cols-2">
+          <div className="lg:order-5">
             <TimerStats
-              currentInterval={currentInterval}
+              currentInterval={intervalIndex}
               intervals={intervals.length}
             />
           </div>
-          <div className="lg:order-4">
+          <div className="lg:order-3">
             <Timer
-              interval={intervals[currentInterval]}
-              onIntervalEnd={() => setCurrentInterval((prev) => prev + 1)}
+              interval={
+                intervals[intervalIndex] || {
+                  duration: 25,
+                  name: "Finished!",
+                }
+              }
+              repeat={intervalIndex < intervals.length - 1}
+              intervalIndex={intervalIndex}
+              onComplete={() => setIntervalIndex((index) => index + 1)}
             />
           </div>
-          <div className="lg:order-2">
+          <div className="lg:order-1">
             <CurrentTask task={currentTask} />
           </div>
-          <div className="lg:order-3">
+          <div className="lg:order-2">
             <TaskCreateForm />
           </div>
-          <div className="lg:order-5 lg:h-full">
+          <div className="lg:order-4 lg:h-full">
             <TasksList
               tasks={tasks}
               onTaskStart={(task: Task) => setCurrentTask(task)}
+              currentTask={currentTask}
             />
           </div>
-          <div className="lg:order-7 lg:self-center">
+          <div className="lg:order-6 lg:self-center">
             <TaskControls />
           </div>
         </div>
       </main>
-    </>
+      <footer className="w-full pb-2">
+        <p className="text-center font-thin tracking-wider text-gray-600">
+          Copyright Ⓒ 2023 ToDanni. All Rights Reserved.
+        </p>
+      </footer>
+    </div>
   );
 };
 

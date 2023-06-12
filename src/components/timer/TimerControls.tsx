@@ -1,4 +1,5 @@
 import { type SVGAttributes } from "react";
+import useSound from "use-sound";
 
 type TimerControlsProps = {
   remainingTime: number;
@@ -13,6 +14,8 @@ export const TimerControls = ({
   onStart,
   onStop,
 }: TimerControlsProps) => {
+  const [play] = useSound("/click.mp3", { volume: 0.1 });
+
   const minutes = Math.floor(remainingTime / 60);
   const seconds = remainingTime % 60;
 
@@ -30,11 +33,17 @@ export const TimerControls = ({
       <div className="flex items-center justify-center">
         <StartButton
           className="h-8 text-green-400 hover:cursor-pointer"
-          onClick={() => onStart()}
+          onClick={() => {
+            play();
+            onStart();
+          }}
         />
         <StopButton
           className="h-8 text-gray-500 hover:cursor-pointer"
-          onClick={() => onStop()}
+          onClick={() => {
+            play();
+            onStop();
+          }}
         />
       </div>
     </div>

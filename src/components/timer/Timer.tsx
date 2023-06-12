@@ -5,58 +5,53 @@ import useSound from "use-sound";
 import { CardContainer } from "../containers/CardContainer";
 import { TimerDateTime } from "./TimerDateTime";
 import { TimerStartEnd } from "./TimerStartEnd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { type Interval } from "~/schemas/timer";
 
 type TimerProps = {
-  interval: Interval | undefined;
-  onIntervalEnd: () => void;
+  interval: Interval;
+  intervalIndex: number;
+  onComplete: () => void;
+  repeat: boolean;
 };
 
-type TimerSettings = {
-  duration: number;
-  isPlaying: boolean;
-};
-
-export const Timer = ({ interval, onIntervalEnd }: TimerProps) => {
-  const [play] = useSound("/notification.mp3", { volume: 0.25 });
+export const Timer = ({
+  interval,
+  intervalIndex,
+  repeat,
+  onComplete,
+}: TimerProps) => {
+  // Timer state is controlled by start and stop buttons
   const [isPlaying, setIsPlaying] = useState(false);
-  const [settings, setSettings] = useState<TimerSettings>({
-    duration: 25 * 60,
-    isPlaying: false,
-  });
 
-  useEffect(() => {
-    if (interval) {
-      setSettings({
-        duration: interval.duration * 60,
-        isPlaying: isPlaying,
-      });
-    }
-  }, [interval, isPlaying]);
-
-  const onComplete = () => {
-    play();
-    onIntervalEnd();
-    return { shouldRepeat: true };
-  };
+  // Play notification sound on complete
+  const [play] = useSound("/notification.mp3", { volume: 0.1 });
 
   return (
     <CardContainer>
-      <div className="flex flex-col justify-between">
+      <div className="flex h-full flex-col justify-between">
         <TimerDateTime />
         <div className="flex min-w-[500px] justify-center">
           <CountdownCircleTimer
+            key={intervalIndex}
             trailColor="#f0fdf4"
             size={500}
-            {...settings}
+            duration={interval.duration * 60}
+            isPlaying={isPlaying}
             colors={"#4ade80"}
-            onComplete={() => onComplete()}
+            onComplete={() => {
+              play();
+              onComplete();
+              setIsPlaying(repeat);
+              return {
+                shouldRepeat: repeat,
+              };
+            }}
           >
             {({ remainingTime }) => (
               <TimerControls
                 remainingTime={remainingTime}
-                name={interval ? interval.name : "Finished!"}
+                name={interval.name}
                 onStart={() => setIsPlaying(true)}
                 onStop={() => setIsPlaying(false)}
               />

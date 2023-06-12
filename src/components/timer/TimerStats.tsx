@@ -17,7 +17,7 @@ export const TimerStats = ({ currentInterval, intervals }: TimerStatsProps) => {
         <div className="flex items-center gap-2">
           <BookOpenIcon className="h-7 w-7 rounded-full border-2 border-green-400 bg-green-100 p-0.5  text-green-400" />
           <p>
-            Intervals: {currentInterval}/{intervals}
+            Intervals: {currentInterval + 1}/{intervals}
           </p>
         </div>
         <div className="flex items-center gap-2">
