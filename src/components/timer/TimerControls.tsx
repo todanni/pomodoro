@@ -6,11 +6,13 @@ type TimerControlsProps = {
   name: string;
   onStart: () => void;
   onStop: () => void;
+  isPlaying: boolean;
 };
 
 export const TimerControls = ({
   remainingTime,
   name,
+  isPlaying,
   onStart,
   onStop,
 }: TimerControlsProps) => {
@@ -31,20 +33,23 @@ export const TimerControls = ({
         {format()}
       </p>
       <div className="flex items-center justify-center">
-        <StartButton
-          className="h-8 text-green-400 hover:cursor-pointer"
-          onClick={() => {
-            play();
-            onStart();
-          }}
-        />
-        <StopButton
-          className="h-8 text-gray-500 hover:cursor-pointer"
-          onClick={() => {
-            play();
-            onStop();
-          }}
-        />
+        {isPlaying ? (
+          <StopButton
+            className="h-8 text-gray-500 hover:cursor-pointer"
+            onClick={() => {
+              play();
+              onStop();
+            }}
+          />
+        ) : (
+          <StartButton
+            className="h-8 text-green-400 hover:cursor-pointer"
+            onClick={() => {
+              play();
+              onStart();
+            }}
+          />
+        )}
       </div>
     </div>
   );

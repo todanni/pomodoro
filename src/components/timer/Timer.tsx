@@ -1,10 +1,8 @@
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import { TimerControls } from "./TimerControls";
-import { DateTime } from "luxon";
 import useSound from "use-sound";
 import { CardContainer } from "../containers/CardContainer";
 import { TimerDateTime } from "./TimerDateTime";
-import { TimerStartEnd } from "./TimerStartEnd";
 import { useState } from "react";
 import { type Interval } from "~/schemas/timer";
 
@@ -50,6 +48,7 @@ export const Timer = ({
           >
             {({ remainingTime }) => (
               <TimerControls
+                isPlaying={isPlaying}
                 remainingTime={remainingTime}
                 name={interval.name}
                 onStart={() => setIsPlaying(true)}
@@ -59,7 +58,7 @@ export const Timer = ({
           </CountdownCircleTimer>
         </div>
         {/* TODO: Pass the correct dates from calculations */}
-        <TimerStartEnd start={DateTime.now()} end={DateTime.now()} />
+        {/* <TimerStartEnd start={DateTime.now()} end={DateTime.now()} /> */}
       </div>
     </CardContainer>
   );

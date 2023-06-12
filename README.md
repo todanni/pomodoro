@@ -32,6 +32,8 @@
 
 The ToDanni Pomodoro Timer is a free to use tool that allows the user to utilise the pomodoro work/study technique and keep track of immediately executable tasks.
 
+![demo](https://i.imgur.com/zz4TPo9.gif)
+
 ### Created From
 
 This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
