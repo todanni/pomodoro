@@ -1,44 +1,36 @@
-import { type Interval } from "~/schemas/timer";
+export type TimeOption = {
+  label: string;
+  value: number;
+};
 
-const getTimerSchedule = () => {
-  const schedule = localStorage.getItem("schedule");
+const minutesOptions: TimeOption[] = [
+  {
+    label: "00",
+    value: 0,
+  },
+  {
+    label: "15",
+    value: 15,
+  },
+  {
+    label: "30",
+    value: 30,
+  },
+  {
+    label: "45",
+    value: 45,
+  },
+];
 
-  if (schedule) {
-    console.log(JSON.parse(schedule));
-  } else {
-    return [];
+const hourOptions = () => {
+  const hours: TimeOption[] = [];
+  for (let i = 0; i < 13; i++) {
+    hours.push({
+      label: i.toString().padStart(2, "0"),
+      value: i,
+    });
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const timerSchedule: Interval[] = JSON.parse(schedule);
-  return timerSchedule;
+  return hours;
 };
 
-const setTimerSchedule = () => {
-  const schedule: Interval[] = [
-    { name: "Work", duration: 25 },
-    { name: "Break", duration: 5 },
-    { name: "Work", duration: 25 },
-    { name: "Break", duration: 5 },
-    { name: "Work", duration: 25 },
-    { name: "Break", duration: 5 },
-    { name: "Work", duration: 25 },
-    { name: "Break", duration: 5 },
-  ];
-
-  localStorage.setItem("schedule", JSON.stringify(schedule));
-};
-
-const getCurrentInterval = (interval: number) => {
-  const schedule = getTimerSchedule();
-
-  if (schedule.length === 0) {
-    return {
-      name: "Work",
-      duration: 25,
-    };
-  }
-  return schedule[interval];
-};
-
-export { getTimerSchedule, setTimerSchedule, getCurrentInterval };
+export { minutesOptions, hourOptions };

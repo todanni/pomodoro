@@ -1,13 +1,11 @@
 import { type Config } from "tailwindcss";
-import defaultTheme from "tailwindcss/defaultTheme";
 
 export default {
-  theme: {
-    screens: {
-      xs: "391px",
-      ...defaultTheme.screens,
-    },
-  },
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
-  plugins: [require("@tailwindcss/forms")],
+  plugins: [
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-var-requires
+    require("@tailwindcss/forms")({
+      strategy: "class", // only generate classes
+    }),
+  ],
 } satisfies Config;

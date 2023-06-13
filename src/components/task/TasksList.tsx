@@ -79,7 +79,7 @@ const TodoTask = ({ task, isCurrentTask, onTaskStart }: TodoTaskProps) => {
       <input
         checked={task.status === "DONE"}
         type="checkbox"
-        className="h-5 w-5 rounded-xl border-gray-300 text-green-400"
+        className="form-checkbox h-5 w-5 rounded-xl border-gray-300 text-green-400"
         onChange={() => completeTask.mutate({ id: task.id })}
       />
       <p className="text-gray-700">{task.name}</p>
