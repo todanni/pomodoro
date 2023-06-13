@@ -1,4 +1,4 @@
-import { DateTime, Duration, Info, Interval } from "luxon";
+import { DateTime, Interval } from "luxon";
 import { z } from "zod";
 
 export const scheduleEventSchema = z.object({
@@ -32,12 +32,36 @@ export type Routine = {
 };
 
 export const routines: Routine[] = [
-  {
-    name: "Breakfast",
-    duration: 30,
-    startHour: 7,
-    startMin: 30,
-  },
+  // {
+  //   name: "Wake up",
+  //   duration: 15,
+  //   startHour: 7,
+  //   startMin: 0,
+  // },
+  // {
+  //   name: "Skincare",
+  //   duration: 30,
+  //   startHour: 7,
+  //   startMin: 15,
+  // },
+  // {
+  //   name: "Breakfast",
+  //   duration: 60,
+  //   startHour: 7,
+  //   startMin: 45,
+  // },
+  // {
+  //   name: "Work",
+  //   duration: 120,
+  //   startHour: 8,
+  //   startMin: 45,
+  // },
+  // {
+  //   name: "Break",
+  //   duration: 15,
+  //   startHour: 10,
+  //   startMin: 45,
+  // },
   {
     name: "Morning Routine",
     duration: 30,
@@ -52,7 +76,7 @@ export const routines: Routine[] = [
   },
   {
     name: "Work",
-    duration: 4 * 60,
+    duration: 2 * 60,
     startHour: 8,
     startMin: 30,
   },
@@ -60,6 +84,12 @@ export const routines: Routine[] = [
     name: "Work",
     duration: 4 * 60,
     startHour: 14,
+    startMin: 0,
+  },
+  {
+    name: "Record progress",
+    duration: 15,
+    startHour: 18,
     startMin: 0,
   },
   {
@@ -89,17 +119,22 @@ export const getScheduleTimes = () => {
       };
     });
 
-  const scheduleStartTime = sortedRoutines[0]!.startTime;
-  const scheduleEndTime = sortedRoutines[sortedRoutines.length - 1]!.endTime;
+  if (sortedRoutines.length === 0 || sortedRoutines[0] === undefined) {
+    return [];
+  }
 
-  const scheduleDuration = Interval.fromDateTimes(
-    scheduleStartTime,
-    scheduleEndTime
-  ).length("minutes");
+  const scheduleStartTime = sortedRoutines[0].startTime;
+  // TODO: Extract this later to use to determine intervals, durations, etc.
+  // const scheduleEndTime = sortedRoutines[sortedRoutines.length - 1]!.endTime;
 
-  const scheduleIntervals = scheduleDuration / 15;
+  // const scheduleDuration = Interval.fromDateTimes(
+  //   scheduleStartTime,
+  //   scheduleEndTime
+  // ).length("minutes");
 
-  return sortedRoutines.map((routine) => {
+  // const scheduleIntervals = scheduleDuration / 15;
+
+  const result = sortedRoutines.map((routine) => {
     const routineDuration = Interval.fromDateTimes(
       routine.startTime,
       routine.endTime
@@ -117,6 +152,10 @@ export const getScheduleTimes = () => {
       duration: formatDuration(routineDuration),
     };
   });
+
+  // TODO: remove this
+  console.table(result);
+  return result;
 };
 
 const formatDuration = (minutes: number) => {
