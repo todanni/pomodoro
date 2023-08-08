@@ -10,98 +10,47 @@ export const scheduleEventSchema = z.object({
   ampm: z.enum(["AM", "PM"]),
 });
 
-// const dur = Duration.fromObject({ hours: 2, minutes: 7 });
-
 export type Routine = {
-  // Name of the routine
   name: string;
-
-  // Starting hour and minute of the routine
-  // used to calculate the start time and end time of the routine
   startHour: number;
   startMin: number;
-
-  // Duration of the routine in minutes
   duration: number;
-
-  // Days of the week the routine is scheduled for
-  // scheduledDays: string[];
-
-  // Tasks that needs to be performed as a part of the routine
-  // tasks: Task[];
 };
 
-export const routines: Routine[] = [
-  // {
-  //   name: "Wake up",
-  //   duration: 15,
-  //   startHour: 7,
-  //   startMin: 0,
-  // },
-  // {
-  //   name: "Skincare",
-  //   duration: 30,
-  //   startHour: 7,
-  //   startMin: 15,
-  // },
-  // {
-  //   name: "Breakfast",
-  //   duration: 60,
-  //   startHour: 7,
-  //   startMin: 45,
-  // },
-  // {
-  //   name: "Work",
-  //   duration: 120,
-  //   startHour: 8,
-  //   startMin: 45,
-  // },
-  // {
-  //   name: "Break",
-  //   duration: 15,
-  //   startHour: 10,
-  //   startMin: 45,
-  // },
-  {
-    name: "Morning Routine",
-    duration: 30,
-    startHour: 7,
-    startMin: 0,
-  },
-  {
-    name: "Lunch",
-    duration: 60,
-    startHour: 12,
-    startMin: 0,
-  },
-  {
-    name: "Work",
-    duration: 2 * 60,
-    startHour: 8,
-    startMin: 30,
-  },
-  {
-    name: "Work",
-    duration: 4 * 60,
-    startHour: 14,
-    startMin: 0,
-  },
-  {
-    name: "Record progress",
-    duration: 15,
-    startHour: 18,
-    startMin: 0,
-  },
-  {
-    name: "Break",
-    duration: 75,
-    startHour: 18,
-    startMin: 30,
-  },
-];
+export type ScheduledRoutine = {
+  rows: number;
+  rowStart: number;
+  duration: string;
+  startTime: DateTime;
+  endTime: DateTime;
+  name: string;
+  isCurrent?: boolean;
+};
+export type ScheduleEvent = z.infer<typeof scheduleEventSchema>;
 
-export const getScheduleTimes = () => {
-  const sortedRoutines = routines
+export const scheduleRoutineSchema = z.object({
+  name: z.string(),
+  startHour: z.number().max(12).min(1),
+  startMin: z.number().min(0).max(59),
+  ampm: z.enum(["AM", "PM"]).default("AM"),
+  hours: z.number().max(24).min(0).int(),
+  mins: z.number().min(0).max(59).int(),
+});
+export type ScheduleRoutineSchema = z.infer<typeof scheduleRoutineSchema>;
+
+export const getScheduleTimes = (currentTime: DateTime) => {
+  const storedRoutines = localStorage.getItem("routines");
+  if (!storedRoutines) {
+    return [];
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const currentValue: Routine[] = JSON.parse(storedRoutines);
+  if (!currentValue || currentValue.length < 1) {
+    return [];
+  }
+
+  const sortedRoutines = currentValue
     .sort((a, b) => {
       return a.startHour - b.startHour || a.startMin - b.startMin;
     })
@@ -124,17 +73,8 @@ export const getScheduleTimes = () => {
   }
 
   const scheduleStartTime = sortedRoutines[0].startTime;
-  // TODO: Extract this later to use to determine intervals, durations, etc.
-  // const scheduleEndTime = sortedRoutines[sortedRoutines.length - 1]!.endTime;
 
-  // const scheduleDuration = Interval.fromDateTimes(
-  //   scheduleStartTime,
-  //   scheduleEndTime
-  // ).length("minutes");
-
-  // const scheduleIntervals = scheduleDuration / 15;
-
-  const result = sortedRoutines.map((routine) => {
+  const result: ScheduledRoutine[] = sortedRoutines.map((routine) => {
     const routineDuration = Interval.fromDateTimes(
       routine.startTime,
       routine.endTime
@@ -145,20 +85,23 @@ export const getScheduleTimes = () => {
         "minutes"
       ) / 15;
 
+    // If we want only the current routine to be expanded, we can use this
+    // currentTime > routine.endTime || currentTime < routine.startTime
+
     return {
       ...routine,
-      rows: routineDuration / 15,
+      isCurrent:
+        currentTime < routine.endTime && currentTime > routine.startTime,
+      rows: currentTime > routine.endTime ? 1 : routineDuration / 15,
       rowStart: routineIntervals + 1,
       duration: formatDuration(routineDuration),
     };
   });
 
-  // TODO: remove this
-  console.table(result);
   return result;
 };
 
-const formatDuration = (minutes: number) => {
+export const formatDuration = (minutes: number) => {
   const hour = Math.floor(minutes / 60);
   const min = minutes % 60;
 
@@ -173,4 +116,25 @@ const formatDuration = (minutes: number) => {
   return (hourString + minString).trim();
 };
 
-export type ScheduleEvent = z.infer<typeof scheduleEventSchema>;
+export const formatRemainingTime = (end: DateTime) => {
+  const durationMins = Interval.fromDateTimes(
+    // DateTime.fromObject({ hour: 16, minute: 15 }),
+    DateTime.now(),
+    end
+  ).length("minutes");
+  return formatDuration(durationMins);
+};
+
+export const calculateProgress = (start: DateTime, end: DateTime) => {
+  const totalDurationMins = Interval.fromDateTimes(start, end).length(
+    "seconds"
+  );
+
+  const remainingDurationMins = Interval.fromDateTimes(
+    // DateTime.fromObject({ hour: 16, minute: 15 }),
+    DateTime.now(),
+    end
+  ).length("seconds");
+
+  return Math.floor((remainingDurationMins / totalDurationMins) * 100);
+};

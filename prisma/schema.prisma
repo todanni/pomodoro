@@ -48,6 +48,7 @@ model User {
   tasks         Task[]
   projects      Project[]
   epics         Epic[]
+  routines      Routine[]
 }
 
 model VerificationToken {
@@ -70,11 +71,15 @@ model Task {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
-  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId String
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String?
+
+  routine   Routine? @relation(fields: [routineId], references: [id], onDelete: Cascade)
+  routineId String?
 
   @@index([userId])
   @@index([projectId])
+  @@index([routineId])
 }
 
 model Project {
@@ -112,4 +117,21 @@ enum Status {
   TODO
   IN_PROGRESS
   DONE
+}
+
+model Routine {
+  id          String  @id @default(cuid())
+  name        String
+  description String?
+  duration   Int // Duration in minutes
+  startHour   Int
+  startMin    Int
+
+  days String // Comma separated list of days
+  tasks Task[]
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+
+  @@index([userId])
 }
